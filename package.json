@@ -1,0 +1,12 @@
+{
+  "name": "jj",
+  "version": "0.0.0",
+  "description": "JQM Chat Room",
+  "main": "app.js",
+  "author": "JJ",
+  "license": "MIT",
+  "dependencies" : {
+    "express": "~3.0.0",
+    "socket.io" : "~0.9.10"
+  }
+}

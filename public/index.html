@@ -1,0 +1,115 @@
+
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <title>Moviekids八卦</title>
+
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable = no">
+
+  <link rel="shortcut icon" href="../favicon.ico">
+
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.2.min.css">
+
+  <script src="js/jquery-1.11.1.min.js"></script>
+
+  <script src="js/jquery.mobile-1.4.2.min.js"></script>
+
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+  <script type="text/javascript" src="js/chat.js"></script>
+  <style>
+
+    #edit-with-js-bin { display: none !important; }
+
+  </style>
+
+</head>
+
+<body>
+
+<div data-role="page" id="startpage" data-theme="a">
+
+<div data-role="popup" id="popupDialog" data-transition="pop" data-history="false" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="max-width:400px;">
+    <div data-role="header" data-theme="a">
+    <h1>尊姓大名?</h1>
+    </div>
+    <div role="main" class="ui-content">
+         <input placeholder="输入昵称" type="text" data-clear-btn="true" name="text-32" id="name" >
+         <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-b" id="chatinto" data-rel="back" data-transition="flow">进入</a>
+    </div>
+</div>
+
+  <div id="scrolldIV" >
+	  <ul id="mbox" data-role="listview" >
+	    <li>欢迎来吐槽！自爆小秘密！</li>
+	  </ul>
+  </div>
+ <input placeholder="编辑内容" type="text" data-clear-btn="true" name="text-3" id="message" >
+ <a data-role="button" id="send" >发送</a>
+ <script type="text/javascript">
+
+      $(document).ready(function() {
+           
+        function onBridgeReady(){
+             document.addEventListener('WeixinJSBridgeReady', function onBridgeReady()     
+        {  WeixinJSBridge.call('hideToolbar');
+         });
+        }
+        
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        }else{
+            onBridgeReady();
+        }
+              
+
+        $("#scrolldIV").css("height",  document.documentElement.clientHeight*0.8);
+        //$("#scrolldIV").css("overflow", "hidden");
+        $("#scrolldIV").css("overflow", "scroll");
+
+
+
+
+ 
+        //nodeurl='http://chat.ap01.aws.af.cm/';
+        nodeurl='http://127.0.0.1/';
+	    $('#chatinto').click(function() {
+	      name=$("#name").val();
+
+          Chat.initialize(nodeurl ,name);
+
+        });
+
+
+      });
+   $("#startpage").on("pageshow",function (){
+   	var popup = setInterval(function(){
+        $("#popupDialog").popup("open");
+        clearInterval(popup);
+    },1000);
+       //$( "#popupDialog" ).popup( "open" ); 
+       //alert("!");
+   });
+
+
+    </script>
+
+</div><!-- /page 1 -->
+
+
+
+</body>
+
+</html>
+
