@@ -1,14 +1,10 @@
 //Create a chat module to use.
 
 (function () {
-
+  var userid=null;
+  var username=null;
   window.Chat = {
-
     socket : null,
-    username:null,
-
-  
-
     initialize : function(socketURL,name) {
 
       $.mobile.loading( "show", {
@@ -17,16 +13,17 @@
 
             textVisible: true,
 
-            textonly: false,
+            textonly: true,
 
             theme: "b",
 
-            html: ""
+            html: "<center><img src='run.gif'></img><p>努力加载中......</p></center>"
 
       });
-
+      $("#message").textinput('disable');
+      //$("#send").button('disable');
       this.socket = io.connect(socketURL);
-      this.username=name;
+      userid=name;
 
       //Send message on button click or enter
 
@@ -58,13 +55,15 @@
 
       this.socket.on('in', this.login);
 
-       this.socket.emit('login', {
+      this.socket.on('isRegistedR', this.isRegisted);
 
-        name:  this.username,
+      this.socket.emit('isRegisted', {
 
-        msg: "【"+ $('#name').val()+"进入了聊天室！】"
+        uid:  userid
 
       });
+
+     
 
     },
 
@@ -84,7 +83,7 @@
 
       
 
-      $('#mbox').append('<li class="ui-li-static ui-body-inherit ui-last-child"><h3>'+name+':</h3><p>'+data.msg+'</p></li>').listview('refresh');
+      $('#mbox').append('<li class="ui-li-static ui-body-inherit ui-last-child" ><h3>'+name+':</h3><p style="white-space: normal;">'+data.msg+'</p></li>').listview('refresh');
 
 
        var div = document.getElementById('scrolldIV');
@@ -99,15 +98,13 @@
 
     login : function(data) {
 
-
-
-       $.mobile.loading( "hide" );
+      //alert("!login");
        
        for(var i=0;i<data.length;i++){
         //  alert(data[i].msg);
          var name = data[i].name || '游客';
 
-        $('#mbox').append('<li class="ui-li-static ui-body-inherit ui-last-child"><h3>'+name+':</h3><p>'+data[i].msg+'</p></li>').listview('refresh');
+        $('#mbox').append('<li class="ui-li-static ui-body-inherit ui-last-child"><h3>'+name+':</h3><p  style="white-space: normal;">'+data[i].msg+'</p></li>').listview('refresh');
 
            
            
@@ -129,9 +126,11 @@
 
     send : function() {
 
+      if($('#message').val()!="")
+      {
       this.socket.emit('msg', {
 
-        name: this.username,
+        name: username,
 
         msg: $('#message').val()
 
@@ -140,13 +139,51 @@
 
 
       $('#message').val('');
-
-
+      }
 
       return false;
 
-    }
+    },
+    isRegisted : function(data) {
+      //alert(data.isRegist);
+       $.mobile.loading( "hide" );
+       $("#message").textinput('enable');
+       //alert(data.isRegist);
+      if(data.isRegist=='yes'){
+       
+       username=data.username;
+       this.emit('login', {
+        name:   username,
+        msg: "【"+  username+"进入了聊天室！】"
+      });
 
+     }else{
+
+       $("#popupDialog").popup("open");
+     }
+
+      return false;
+
+    },
+ 
+    Regist : function(name,uid) {
+      //alert(data.isRegist);
+       //$.mobile.loading( "hide" );
+       //alert(data.isRegist);
+      userid=uid;
+      username=name;
+      this.socket.emit('Regist', {
+        name:  name,
+        uid: uid
+      });
+      this.socket.emit('login', {
+        name:   username,
+        msg: "【"+  username+"进入了聊天室！】"
+      });
+
+      return false;
+
+    },
   };
 
 }());

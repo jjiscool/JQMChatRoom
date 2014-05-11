@@ -46,16 +46,20 @@
 </div>
 
   <div id="scrolldIV" >
-	  <ul id="mbox" data-role="listview" >
-	    <li>欢迎来吐槽！自爆小秘密！</li>
-	  </ul>
+    <ul id="mbox" data-role="listview" >
+     <li style="white-space: normal;">欢迎来吐槽！自爆小秘密！<p><font color='red' size=1>昵称只需输入一次(想更换?请清除浏览器缓存)！</font></p></li>
+    </ul>
   </div>
  <input placeholder="编辑内容" type="text" data-clear-btn="true" name="text-3" id="message" >
  <a data-role="button" id="send" >发送</a>
  <script type="text/javascript">
-
+      //nodeurl='http://127.0.0.1/';
+      nodeurl='http://chat.ap01.aws.af.cm/';
       $(document).ready(function() {
-           
+       
+        //var uid=localStorage.setItem('userid',);
+        
+        //alert(username);
         function onBridgeReady(){
              document.addEventListener('WeixinJSBridgeReady', function onBridgeReady()     
         {  WeixinJSBridge.call('hideToolbar');
@@ -80,27 +84,48 @@
 
 
 
-
+        function GetQueryString(str){
+          var LocString=String(window.document.location.href);
+          var rs=new RegExp("(^|)"+str+"=([^&]*)(&|$)","gi").exec(LocString),tmp;
+          if(tmp=rs)return tmp[2];
+            return undefined;
+          }
  
-        //nodeurl='http://chat.ap01.aws.af.cm/';
-        nodeurl='http://127.0.0.1/';
-	    $('#chatinto').click(function() {
-	      name=$("#name").val();
-
-          Chat.initialize(nodeurl ,name);
+        
+      Chat.initialize(nodeurl ,GetQueryString('uid'));
+      
+      $('#chatinto').click(function() {
+          name=$("#name").val();
+          Chat.Regist(name,GetQueryString('uid'));
 
         });
 
-
       });
+/*
    $("#startpage").on("pageshow",function (){
-   	var popup = setInterval(function(){
-        $("#popupDialog").popup("open");
-        clearInterval(popup);
-    },1000);
+
+        function GetQueryString(str){
+          var LocString=String(window.document.location.href);
+          var rs=new RegExp("(^|)"+str+"=([^&]*)(&|$)","gi").exec(LocString),tmp;
+          if(tmp=rs)return tmp[2];
+            return undefined;
+        }
+       var username=localStorage.getItem(GetQueryString('uid'));
+
+        if(!username){
+           //alert(username);
+        var popup = setInterval(function(){
+            $("#popupDialog").popup("open");
+            clearInterval(popup);
+        },1000);}else{ 
+          //alert(username);
+          Chat.initialize(nodeurl ,username);
+        }
        //$( "#popupDialog" ).popup( "open" ); 
        //alert("!");
    });
+*/
+    //}
 
 
     </script>

@@ -1,6 +1,9 @@
 var express = require('express');
 
 var app = express();
+//app.use(express.logger());
+
+
 
 var server = require('http').createServer(app);
 
@@ -8,11 +11,13 @@ var io = require('socket.io').listen(server);
 
 var records=new Array;
 
+var users=new Array;
+
+app.use(express.static(__dirname + '/public'));
+
 server.listen(80);
 
 
-
-app.use("/", express.static(__dirname + '/public'));
 
 
 
@@ -33,6 +38,7 @@ io.sockets.on('connection', function (socket) {
   });
 
    socket.on('login', function (data) {
+    //console.log("Login");
     var newd=records.concat();
     username=data.name;
     if(newd.length>50){ 
@@ -44,6 +50,27 @@ io.sockets.on('connection', function (socket) {
     }
     socket.emit('in', newd);
     socket.broadcast.emit('new', data);
+
+  });
+
+   socket.on('isRegisted', function (data) {
+   console.log(users[data.uid]);
+     if(users[data.uid]){
+
+        socket.emit('isRegistedR', {isRegist:"yes",username:users[data.uid]});
+
+     }else{
+
+        socket.emit('isRegistedR', {isRegist:"no",username:"null"});
+
+     }
+
+  });
+
+   socket.on('Regist', function (data) {
+     //console.log(users[data.uid]);
+     users[data.uid]=data.name;
+     //console.log(users[data.uid]);
 
   });
   socket.on('disconnect', function () {
